@@ -1,5 +1,6 @@
 #!/bin/bash
-while :
+while true
 do
-    sleep 0   
-done &
+    echo "Running..."
+    sleep 5  
+done
