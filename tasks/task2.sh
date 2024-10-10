@@ -1,11 +1,7 @@
 #!/bin/bash
 
-grep -l "sample" ../dataset1/* | while read file; do       # Find all files with word "sample" in them
-  count=$(grep -c "CSC510" "$file" | grep -o "[^:]*$")     # Extract counts of the occurances of word CSC510 and filter out file name from it
-  if [ "$count" -ge 3 ]; then  
-    size=$(stat -c %s "$file")                   
-    echo "$count $size $file"                              # Output the stream of occurance count, file size and file name
-  fi
-done | sort -rn -k1,1 -k2,2 | while read count size file; do      # Sort based on occurance first then on file size in descending order
-  echo "$file"
-done
+# Extract counts of the occurances of word CSC510 and filter out file name from it
+# Output the stream of occurance count, file size and file name
+# Sort based on occurance first then on file size in descending order
+
+grep -l sample ./dataset1/* | xargs grep -o CSC510 | uniq -c | grep -E "^\s+[3-9][0-9]*|^\s+[1-9][0-9]+\s\w+" | gawk '{print $1, $2}' | sed 's/:CSC510$//' |xargs -I {} sh -c 'file=$(echo "{}" | gawk "{print \$2}"); echo "{}" $(stat -c%s "$file")' | sort -k1,1nr -k3,3nr | gawk '{print $2}' | sed 's/file/filtered/'
